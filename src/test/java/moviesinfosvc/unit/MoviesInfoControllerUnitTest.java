@@ -1,27 +1,24 @@
 package moviesinfosvc.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
-import moviesinfosvc.ReactiveSpringMoviesInfoSvcApplication;
+import moviesinfosvc.controller.MoviesInfoController;
 import moviesinfosvc.domain.MovieInfo;
 import moviesinfosvc.service.MoviesInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-//@WebFluxTest(controllers = MoviesInfoController.class)
-@SpringBootTest(classes = ReactiveSpringMoviesInfoSvcApplication.class,webEnvironment = WebEnvironment.RANDOM_PORT)
+//@SpringBootTest
+@WebFluxTest(controllers = MoviesInfoController.class)
 @AutoConfigureWebTestClient
 class MoviesInfoControllerUnitTest {
 
@@ -31,7 +28,7 @@ class MoviesInfoControllerUnitTest {
   @MockBean
   private MoviesInfoService moviesInfoService;
 
-  static String URL_MOVIE_INFOS = "/v1/movieinfos";
+  static String URL_MOVIES_INFO = "/v1/moviesinfo";
 
   @Test
   void getAllMovieInfos(){
@@ -46,7 +43,7 @@ class MoviesInfoControllerUnitTest {
 
     webTestClient
         .get()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .exchange()
         .expectStatus()
         .is2xxSuccessful()
@@ -64,7 +61,7 @@ class MoviesInfoControllerUnitTest {
 
     webTestClient
         .get()
-        .uri(URL_MOVIE_INFOS+"/{id}",movieInfoById)
+        .uri(URL_MOVIES_INFO+"/{id}",movieInfoById)
         .exchange()
         .expectStatus()
         .is2xxSuccessful()
@@ -89,7 +86,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .post()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
@@ -118,7 +115,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .put()
-        .uri(URL_MOVIE_INFOS+"/{id}",movieInfoId)
+        .uri(URL_MOVIES_INFO+"/{id}",movieInfoId)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
@@ -141,7 +138,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .delete()
-        .uri(URL_MOVIE_INFOS+"/{id}",movieInfoId)
+        .uri(URL_MOVIES_INFO+"/{id}",movieInfoId)
         .exchange()
         .expectStatus()
         .isNoContent()
@@ -162,7 +159,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .post()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
@@ -183,7 +180,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .post()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
@@ -206,7 +203,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .post()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
@@ -230,7 +227,7 @@ class MoviesInfoControllerUnitTest {
     //when
     webTestClient
         .post()
-        .uri(URL_MOVIE_INFOS)
+        .uri(URL_MOVIES_INFO)
         .bodyValue(movieInfo)
         .exchange()
         .expectStatus()
