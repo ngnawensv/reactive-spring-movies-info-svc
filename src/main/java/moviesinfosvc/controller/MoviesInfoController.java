@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import moviesinfosvc.domain.MovieInfo;
 import moviesinfosvc.service.MoviesInfoService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.publisher.Sinks;
 
 @RestController
 @RequestMapping("/v1/moviesinfo")
@@ -25,15 +27,26 @@ import reactor.core.publisher.Mono;
 public class MoviesInfoController {
 
   private MoviesInfoService moviesInfoService;
+  Sinks.Many<MovieInfo> movieInfoSink = Sinks.many().replay().all();
 
   public MoviesInfoController(MoviesInfoService moviesInfoService) {
     this.moviesInfoService = moviesInfoService;
   }
 
+  @GetMapping(value = "/stream",produces = MediaType.APPLICATION_NDJSON_VALUE)
+  public Flux<MovieInfo> getAllMovieInfosStream(){
+    return movieInfoSink.asFlux().log(); // here is the attach of subscribe
+  }
+
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public Mono<MovieInfo> addMovieInfo(@RequestBody @Valid MovieInfo movieInfo){
-    return moviesInfoService.addMovieInfo(movieInfo).log();
+    return moviesInfoService.addMovieInfo(movieInfo)
+        .doOnNext(savedInfo->movieInfoSink.tryEmitNext(savedInfo));
+    /*
+    Fondamental idea: any time we add a new movieInfo, publish that movie to something.
+    Subscribe to this movieInfo. Ref https://projectreactor.io/docs/core/release/reference/#sinks
+    */
   }
 
   @GetMapping
